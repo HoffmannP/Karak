@@ -17,7 +17,18 @@ export enum Richtung {
 
 export enum Ausstattung {
     Heilquelle,
-    Portal
+    Portal,
+    Raum
+}
+
+export class Raumkarte {
+    typ: Typ
+    ausstattung: (false | Ausstattung)
+
+    constructor(typ: Typ, ausstattung: (false | Ausstattung)) {
+        this.typ = typ
+        this.ausstattung = ausstattung
+    }
 }
 
 export class Spielfeld {
@@ -27,8 +38,8 @@ export class Spielfeld {
     westen: (null | false | Spielfeld)
     inhalt: (false | Ausstattung | Monster | Gegenstand )
 
-    constructor (typ: Typ, richtung: Richtung, inhalt: (false | Ausstattung | Monster | Gegenstand )) {
-        switch (typ) {
+    constructor (raumkarte: Raumkarte, richtung: Richtung) {
+        switch (raumkarte.typ) {
             case Typ.Gang: {
                 if ([Richtung.Norden, Richtung.Süden].includes(richtung)) {
                     this.norden = null
@@ -117,7 +128,7 @@ export class Spielfeld {
                 break
             }
         }
-        this.inhalt = inhalt
+        this.inhalt = raumkarte.inhalt
     }
 
     connect(richtung: Richtung, nachbar: Spielfeld) {
@@ -142,7 +153,7 @@ export class Spielfeld {
     }
 
     monster_besiegt() {
-        this.inhalt = Monster.loot
+        this.inhalt = (this.inhalt as Monster).loot
     }
 
     gegenstand_aufgenommen() {

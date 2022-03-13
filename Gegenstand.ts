@@ -1,13 +1,12 @@
-export export enum Typ {
-    Waffe,
-    Schlüssel,
-    Spruch
-}
-
 export abstract class Gegenstand {
+    name: string
+
+    constructor (name: string) {
+        this.name = name
+    }
 }
 
-export export enum Waffentyp {
+export enum Waffentyp {
     Dolche,
     Schwert,
     Axt
@@ -18,37 +17,72 @@ export class Waffe extends Gegenstand {
     stärke: number
 
     constructor (typ: Waffentyp) {
-        super()
         switch (typ) {
             case Waffentyp.Dolche: {
+                super('Dolche')
                 this.stärke = 1
                 break
             }
             case Waffentyp.Schwert: {
+                super('Schwer')
                 this.stärke = 2
                 break
             }
             case Waffentyp.Axt: {
+                super('Axt')
                 this.stärke = 3
                 break
             }
+            default: {
+                super('Unbekannt')
+            }
         }
+        this.typ = typ
     }
 }
 
 export class Schlüssel extends Gegenstand {
+    constructor () {
+        super('Schlüssel')
+    }
 }
 
-export enum Spruchtyp {
-    Heilungquelle,
-    Feuerschwert
+export enum Zaubertyp {
+    Heilzauber,
+    Flammenzauber
 }
 
-export class Spruch extends Gegenstand {
-    typ: Spruchtyp
+export class Zauber extends Gegenstand {
+    typ: Zaubertyp
 
-    constructor (typ: Spruchtyp) {
-        super()
+    constructor (typ: Zaubertyp) {
+        switch (typ) {
+            case Zaubertyp.Flammenzauber: {
+                super('Flammenzauber')
+                break
+            }
+            case Zaubertyp.Heilzauber: {
+                super('Heilzauber')
+                break
+            }
+            default:
+                super('Unbekannt')
+                break
+        }
         this.typ = typ
+    }
+}
+
+export class Schatztruhe extends Gegenstand {
+    wert: number
+
+    constructor (drachenschatz: boolean = false) {
+        if (drachenschatz) {
+            super('Drachenschatz')
+            this.wert = 1.5
+        } else {
+            super('Schatztruhe')
+            this.wert = 1
+        }
     }
 }
