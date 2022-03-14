@@ -8,7 +8,7 @@ export enum Typ {
     Kreuzung
 }
 
-export enum Richtung {
+export enum Orientierung {
     Norden,
     Osten,
     Süden,
@@ -31,136 +31,106 @@ export class Raumkarte {
     }
 }
 
-export class Spielfeld {
-    norden: (null | false | Spielfeld)
-    osten: (null | false | Spielfeld)
-    süden: (null | false | Spielfeld)
-    westen: (null | false | Spielfeld)
+type Raum = {
+    norden: boolean,
+    osten: boolean,
+    süden: boolean,
+    westen: boolean,
     inhalt: (false | Ausstattung | Monster | Gegenstand )
+}
+export class Spielfeld {
+    feld: { [position: string]: Raum } = {}
 
-    constructor (raumkarte: Raumkarte, richtung: Richtung) {
+
+    public setFeld(x: number, y: number, raum:  Raum) {
+        this.feld[`${x}|${y}`] = raum
+    }
+
+    public getFeld(x: number, y: number): Raum {
+        return this.feld[`${x}|${y}`]
+    }
+
+    lege_karte(x: number, y: number, raumkarte: Raumkarte, orientierung: Orientierung) {
+        const raum = {
+            norden: true,
+            osten: true,
+            süden: true,
+            westen: true,
+            inhalt: raumkarte.ausstattung
+        }
         switch (raumkarte.typ) {
             case Typ.Gang: {
-                if ([Richtung.Norden, Richtung.Süden].includes(richtung)) {
-                    this.norden = null
-                    this.osten = false
-                    this.süden = null
-                    this.westen = false
+                if ([Orientierung.Norden, Orientierung.Süden].includes(orientierung)) {
+                    raum.osten = false
+                    raum.westen = false
                 } else {
-                    this.norden = false
-                    this.osten = null
-                    this.süden = false
-                    this.westen = null
+                    raum.norden = false
+                    raum.süden = false
                 }
                 break
             }
             case Typ.Ecke: {
-                switch (richtung) {
-                    case Richtung.Norden: {
-                        this.norden = null
-                        this.osten = null
-                        this.süden = false
-                        this.westen = false
+                switch (orientierung) {
+                    case Orientierung.Norden: {
+                        raum.süden = false
+                        raum.westen = false
                         break
                     }
-                    case Richtung.Osten: {
-                        this.norden = false
-                        this.osten = null
-                        this.süden = null
-                        this.westen = false
+                    case Orientierung.Osten: {
+                        raum.westen = false
+                        raum.norden = false
                         break
                     }
-                    case Richtung.Süden: {
-                        this.norden = false
-                        this.osten = false
-                        this.süden = null
-                        this.westen = null
+                    case Orientierung.Süden: {
+                        raum.norden = false
+                        raum.osten = false
                         break
                     }
-                    case Richtung.Westen: {
-                        this.norden = null
-                        this.osten = false
-                        this.süden = false
-                        this.westen = null
+                    case Orientierung.Westen: {
+                        raum.osten = false
+                        raum.süden = false
                         break
                     }
                 }
                 break
             }
             case Typ.TStück: {
-                switch (richtung) {
-                    case Richtung.Norden: {
-                        this.norden = false
-                        this.osten = null
-                        this.süden = null
-                        this.westen = null
+                switch (orientierung) {
+                    case Orientierung.Norden: {
+                        raum.westen = false
                         break
                     }
-                    case Richtung.Osten: {
-                        this.norden = null
-                        this.osten = false
-                        this.süden = null
-                        this.westen = null
+                    case Orientierung.Osten: {
+                        raum.norden = false
                         break
                     }
-                    case Richtung.Süden: {
-                        this.norden = null
-                        this.osten = null
-                        this.süden = false
-                        this.westen = null
+                    case Orientierung.Süden: {
+                        raum.osten = false
                         break
                     }
-                    case Richtung.Westen: {
-                        this.norden = null
-                        this.osten = null
-                        this.süden = null
-                        this.westen = false
+                    case Orientierung.Westen: {
+                        raum.süden = false
                         break
                     }
                 }
                 break
             }
-            case Typ.Kreuzung: {
-                this.norden = null
-                this.osten = null
-                this.süden = null
-                this.westen = null
-                break
-            }
         }
-        this.inhalt = raumkarte.inhalt
+        this.setFeld(x, y, raum)
     }
 
-    connect(richtung: Richtung, nachbar: Spielfeld) {
-        switch(richtung) {
-            case Richtung.Norden: {
-                this.norden = nachbar
-                break
-            }
-            case Richtung.Osten: {
-                this.osten = nachbar
-                break
-            }
-            case Richtung.Süden: {
-                this.süden = nachbar
-                break
-            }
-            case Richtung.Westen: {
-                this.westen = nachbar
-                break
-            }
-        }
+    raum_ziehe_inhalt(x: number, y: number, monster: Monster) {
+        this.getFeld(x, y).inhalt = monster
+    }
+    monster_besiegt(x: number, y: number) {
+        this.getFeld(x, y).inhalt = (this.getFeld(x, y).inhalt as Monster).loot
     }
 
-    monster_besiegt() {
-        this.inhalt = (this.inhalt as Monster).loot
+    gegenstand_aufgenommen(x: number, y: number) {
+        this.getFeld(x, y).inhalt = false
     }
 
-    gegenstand_aufgenommen() {
-        this.inhalt = false
-    }
-
-    gegenstand_abgelegt(gegenstand: Gegenstand) {
-        this.inhalt = gegenstand
+    gegenstand_abgelegt(x: number, y: number, gegenstand: Gegenstand) {
+        this.getFeld(x, y).inhalt = gegenstand
     }
 }

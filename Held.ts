@@ -1,13 +1,20 @@
-import { Waffe, Zauber } from "./Gegenstand"
+import { Schatztruhe, Waffe, Zauber } from "./Gegenstand"
 
 abstract class Held {
     name: string
-    waffen: Waffe[] = [null, null]
+    waffen: [(null | Waffe), (null | Waffe)] = [null, null]
     schluessel: boolean = false
-    zauber: Zauber[] = [null, null, null]
+    zauber: [(null | Zauber), (null | Zauber), (null | Zauber)] = [null, null, null]
+    schritte: number
+    herzen: number
+    verflucht: boolean
+    schatztruhen: Schatztruhe[] = []
 
     constructor (name: string) {
         this.name = name
+        this.herzen = 5
+        this.verflucht = false
+
     }
 }
 
