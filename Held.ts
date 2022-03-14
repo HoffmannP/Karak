@@ -1,6 +1,8 @@
 import { Schatztruhe, Waffe, Zauber } from "./Gegenstand"
 
 abstract class Held {
+    x: number
+    y: number
     name: string
     waffen: [(null | Waffe), (null | Waffe)] = [null, null]
     schluessel: boolean = false
@@ -11,6 +13,8 @@ abstract class Held {
     schatztruhen: Schatztruhe[] = []
 
     constructor (name: string) {
+        this.x = 0
+        this.y = 0
         this.name = name
         this.herzen = 5
         this.verflucht = false
