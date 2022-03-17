@@ -1,0 +1,11 @@
+* Heldentyp wählen
+* Zeit abwarten oder manuell starten
+* [Spiel beginnen]
+* [Reihnfolge der Spieler bestimmen]
+* Pro Spieler:
+    * Richtung wählen
+        * [Raumkarte ziehen]
+        * Inhalt bestimmen
+        * Kämpfen
+        * Gegenstände aufnehmen/ablegen
+    * Heilzauber
