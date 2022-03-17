@@ -2,10 +2,12 @@ import typing
 import random
 from Monster import Monster, Typ as Monstertyp
 from Spielfeld import Ausstattung, Raumkarte, Typ as Raumtyp
+from Held import Held, Typ as Heldentyp
 
-class Global:
+class World:
     raumpool: typing.List[Raumkarte]
     monsterpool: typing.List[Monster]
+    players: typing.Dict[str, Held]
 
     def __init__(self):
         self.monsterpool = [
@@ -31,3 +33,6 @@ class Global:
             *[Raumkarte(Raumtyp.Ecke, Ausstattung.Heilquelle) for _ in range(2)],
             *[Raumkarte(Raumtyp.Gang, Ausstattung.Portal) for _ in range(4)]]
         random.shuffle(self.monsterpool)
+
+    def add_player(self, name: str, held: Held):
+        self.players[name] = held
