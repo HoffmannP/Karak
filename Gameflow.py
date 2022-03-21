@@ -1,5 +1,5 @@
 import typing
-from Global import World
+from World import World
 from Held import Held, Typ as Heldentyp
 
 class Gamephase:
